@@ -3,3 +3,4 @@ terraform-provider
 terraform-provider-appclacks
 .terraform.lock.hcl
 terraform.tfstate*
+.terraform.tfstate*

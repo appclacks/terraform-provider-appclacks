@@ -81,75 +81,30 @@ func resourceHealthcheckDNSUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	client := GetAppclacksClient(meta)
 
-	_, err := client.GetHealthcheck(apitypes.GetHealthcheckInput{
-		ID: d.Id(),
-	})
-	if err != nil {
-		return diag.FromErr(err)
+	update := apitypes.UpdateDNSHealthcheckInput{
+		ID:       d.Id(),
+		Name:     d.Get(resHealthcheckName).(string),
+		Interval: d.Get(resHealthcheckInterval).(string),
+		Timeout:  d.Get(resHealthcheckTimeout).(string),
+		Enabled:  d.Get(resHealthcheckEnabled).(bool),
+		HealthcheckDNSDefinition: apitypes.HealthcheckDNSDefinition{
+			Domain: d.Get(resHealthcheckDNSDomain).(string),
+		},
 	}
 
-	update := apitypes.UpdateDNSHealthcheckInput{}
-
-	var updated bool
-
-	if d.HasChange(resHealthcheckName) {
-		v := d.Get(resHealthcheckName).(string)
-		update.Name = v
-		updated = true
+	if v, ok := d.GetOk(resHealthcheckDescription); ok {
+		update.Description = v.(string)
 	}
-
-	if d.HasChange(resHealthcheckDescription) {
-		v := d.Get(resHealthcheckDescription).(string)
-		update.Description = v
-		updated = true
-	}
-
-	if d.HasChange(resHealthcheckLabels) {
+	if l, ok := d.GetOk(resHealthcheckLabels); ok {
 		labels := make(map[string]string)
-		for k, v := range d.Get(resHealthcheckLabels).(map[string]interface{}) {
+		for k, v := range l.(map[string]interface{}) {
 			labels[k] = v.(string)
 		}
 		update.Labels = labels
-		updated = true
 	}
 
-	if d.HasChange(resHealthcheckInterval) {
-		v := d.Get(resHealthcheckInterval).(string)
-		update.Interval = v
-		updated = true
-	}
-
-	if d.HasChange(resHealthcheckTimeout) {
-		v := d.Get(resHealthcheckTimeout).(string)
-		update.Timeout = v
-		updated = true
-	}
-
-	if d.HasChange(resHealthcheckEnabled) {
-		v := d.Get(resHealthcheckEnabled).(bool)
-		update.Enabled = v
-		updated = true
-	}
-	if d.HasChange(resHealthcheckDNSDomain) {
-		v := d.Get(resHealthcheckDNSDomain).(string)
-		update.Domain = v
-		updated = true
-	}
-
-	if d.HasChange(resHealthcheckDNSExpectedIPs) {
-		set := d.Get(resHealthcheckDNSExpectedIPs).(*schema.Set)
-		list := []string{}
-		for _, v := range set.List() {
-			list = append(list, v.(string))
-		}
-		update.ExpectedIPs = list
-		updated = true
-	}
-
-	if updated {
-		if _, err = client.UpdateDNSHealthcheck(update); err != nil {
-			return diag.FromErr(err)
-		}
+	if _, err := client.UpdateDNSHealthcheck(update); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return resourceHealthcheckDNSRead(ctx, d, meta)
