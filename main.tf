@@ -1,0 +1,18 @@
+terraform {
+  required_providers {
+    appclacks = {
+      version = "~> 0.0.1"
+      source = "terraform-appclacks.com/appclacksprovider/appclacks"
+    }
+  }
+}
+
+provider "appclacks" {
+
+}
+
+resource "appclacks_healthcheck_dns" "test" {
+  name = "test-tf"
+  domain = "mcorbin.fr"
+
+}
