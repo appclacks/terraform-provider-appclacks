@@ -78,7 +78,8 @@ func resourceHealthcheckDNS() *schema.Resource {
 }
 
 func resourceHealthcheckDNSUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-
+	ctx, cancel := context.WithTimeout(ctx, d.Timeout(schema.TimeoutCreate))
+	defer cancel()
 	client := GetAppclacksClient(meta)
 
 	update := apitypes.UpdateDNSHealthcheckInput{
@@ -103,7 +104,7 @@ func resourceHealthcheckDNSUpdate(ctx context.Context, d *schema.ResourceData, m
 		update.Labels = labels
 	}
 
-	if _, err := client.UpdateDNSHealthcheck(update); err != nil {
+	if _, err := client.UpdateDNSHealthcheck(ctx, update); err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -111,11 +112,12 @@ func resourceHealthcheckDNSUpdate(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceHealthcheckDNSDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-
+	ctx, cancel := context.WithTimeout(ctx, d.Timeout(schema.TimeoutCreate))
+	defer cancel()
 	client := GetAppclacksClient(meta)
 
 	healthcheckID := d.Id()
-	_, err := client.DeleteHealthcheck(apitypes.DeleteHealthcheckInput{ID: healthcheckID})
+	_, err := client.DeleteHealthcheck(ctx, apitypes.DeleteHealthcheckInput{ID: healthcheckID})
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -161,7 +163,7 @@ func resourceHealthcheckDNSCreate(ctx context.Context, d *schema.ResourceData, m
 		}
 	}
 
-	result, err := client.CreateDNSHealthcheck(healthcheck)
+	result, err := client.CreateDNSHealthcheck(ctx, healthcheck)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -171,9 +173,11 @@ func resourceHealthcheckDNSCreate(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceHealthcheckDNSRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	ctx, cancel := context.WithTimeout(ctx, d.Timeout(schema.TimeoutCreate))
+	defer cancel()
 	client := GetAppclacksClient(meta)
 
-	result, err := client.GetHealthcheck(apitypes.GetHealthcheckInput{
+	result, err := client.GetHealthcheck(ctx, apitypes.GetHealthcheckInput{
 		ID: d.Id(),
 	})
 	if err != nil {

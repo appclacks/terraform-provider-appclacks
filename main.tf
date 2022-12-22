@@ -13,6 +13,11 @@ provider "appclacks" {
 
 resource "appclacks_healthcheck_dns" "test" {
   name = "test-tf"
+  interval = "30s"
+  timeout = "3s"
+  description = "hello appclacks terraform provider !"
+  labels = {
+    "env": "prod"
+  }
   domain = "mcorbin.fr"
-
 }
