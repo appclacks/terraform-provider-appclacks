@@ -10,8 +10,10 @@ import (
 )
 
 const (
-	defaultTimeout = 10 * time.Second
-	defaultAPIURL  = "https://api.appclacks.com"
+	defaultTimeout             = 10 * time.Second
+	defaultAPIURL              = "https://api.appclacks.com"
+	defaultHealthcheckTimeout  = "10s"
+	defaultHealthcheckInterval = "60s"
 )
 
 func Provider() *schema.Provider {
@@ -29,7 +31,11 @@ func Provider() *schema.Provider {
 		DataSourcesMap: map[string]*schema.Resource{},
 
 		ResourcesMap: map[string]*schema.Resource{
-			"appclacks_healthcheck_dns": resourceHealthcheckDNS(),
+			"appclacks_healthcheck_dns":     resourceHealthcheckDNS(),
+			"appclacks_healthcheck_tcp":     resourceHealthcheckTCP(),
+			"appclacks_healthcheck_tls":     resourceHealthcheckTLS(),
+			"appclacks_healthcheck_http":    resourceHealthcheckHTTP(),
+			"appclacks_healthcheck_command": resourceHealthcheckCommand(),
 		},
 	}
 }

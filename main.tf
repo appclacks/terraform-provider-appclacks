@@ -11,7 +11,7 @@ provider "appclacks" {
 
 }
 
-resource "appclacks_healthcheck_dns" "test" {
+resource "appclacks_healthcheck_dns" "test_dns" {
   name = "test-tf"
   interval = "30s"
   timeout = "3s"
