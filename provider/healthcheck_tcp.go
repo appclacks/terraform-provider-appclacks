@@ -12,17 +12,12 @@ import (
 )
 
 const (
-	resHealthcheckName           = "name"
-	resHealthcheckDescription    = "description"
-	resHealthcheckLabels         = "labels"
-	resHealthcheckInterval       = "interval"
-	resHealthcheckTimeout        = "timeout"
-	resHealthcheckEnabled        = "enabled"
-	resHealthcheckDNSDomain      = "domain"
-	resHealthcheckDNSExpectedIPs = "expected_ips"
+	resHealthcheckTarget        = "target"
+	resHealthcheckPort          = "port"
+	resHealthcheckTCPShouldFail = "should_fail"
 )
 
-func resourceHealthcheckDNS() *schema.Resource {
+func resourceHealthcheckTCP() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			resHealthcheckName: {
@@ -53,21 +48,25 @@ func resourceHealthcheckDNS() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
-			resHealthcheckDNSDomain: {
+			resHealthcheckTarget: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			resHealthcheckDNSExpectedIPs: {
-				Type:     schema.TypeSet,
+			resHealthcheckPort: {
+				Type:     schema.TypeInt,
+				Required: true,
+			},
+			resHealthcheckTCPShouldFail: {
+				Type:     schema.TypeBool,
 				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Default:  false,
 			},
 		},
 
-		CreateContext: resourceHealthcheckDNSCreate,
-		ReadContext:   resourceHealthcheckDNSRead,
-		UpdateContext: resourceHealthcheckDNSUpdate,
-		DeleteContext: resourceHealthcheckDNSDelete,
+		CreateContext: resourceHealthcheckTCPCreate,
+		ReadContext:   resourceHealthcheckTCPRead,
+		UpdateContext: resourceHealthcheckTCPUpdate,
+		DeleteContext: resourceHealthcheckTCPDelete,
 
 		Importer: &schema.ResourceImporter{},
 
@@ -80,24 +79,28 @@ func resourceHealthcheckDNS() *schema.Resource {
 	}
 }
 
-func resourceHealthcheckDNSUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceHealthcheckTCPUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	ctx, cancel := context.WithTimeout(ctx, d.Timeout(schema.TimeoutCreate))
 	defer cancel()
 	client := GetAppclacksClient(meta)
 
-	update := apitypes.UpdateDNSHealthcheckInput{
+	update := apitypes.UpdateTCPHealthcheckInput{
 		ID:       d.Id(),
 		Name:     d.Get(resHealthcheckName).(string),
 		Interval: d.Get(resHealthcheckInterval).(string),
 		Timeout:  d.Get(resHealthcheckTimeout).(string),
 		Enabled:  d.Get(resHealthcheckEnabled).(bool),
-		HealthcheckDNSDefinition: apitypes.HealthcheckDNSDefinition{
-			Domain: d.Get(resHealthcheckDNSDomain).(string),
+		HealthcheckTCPDefinition: apitypes.HealthcheckTCPDefinition{
+			Target: d.Get(resHealthcheckTarget).(string),
+			Port:   uint(d.Get(resHealthcheckPort).(int)),
 		},
 	}
 
 	if v, ok := d.GetOk(resHealthcheckDescription); ok {
 		update.Description = v.(string)
+	}
+	if v, ok := d.GetOk(resHealthcheckTCPShouldFail); ok {
+		update.HealthcheckTCPDefinition.ShouldFail = v.(bool)
 	}
 	if l, ok := d.GetOk(resHealthcheckLabels); ok {
 		labels := make(map[string]string)
@@ -107,25 +110,14 @@ func resourceHealthcheckDNSUpdate(ctx context.Context, d *schema.ResourceData, m
 		update.Labels = labels
 	}
 
-	if set, ok := d.Get(resHealthcheckDNSExpectedIPs).(*schema.Set); ok {
-		if l := set.Len(); l > 0 {
-			list := make([]string, l)
-			for i, v := range set.List() {
-				list[i] = v.(string)
-			}
-			update.HealthcheckDNSDefinition.ExpectedIPs = list
-
-		}
-	}
-
-	if _, err := client.UpdateDNSHealthcheck(ctx, update); err != nil {
+	if _, err := client.UpdateTCPHealthcheck(ctx, update); err != nil {
 		return diag.FromErr(err)
 	}
 
-	return resourceHealthcheckDNSRead(ctx, d, meta)
+	return resourceHealthcheckTCPRead(ctx, d, meta)
 }
 
-func resourceHealthcheckDNSDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceHealthcheckTCPDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	ctx, cancel := context.WithTimeout(ctx, d.Timeout(schema.TimeoutCreate))
 	defer cancel()
 	client := GetAppclacksClient(meta)
@@ -139,19 +131,20 @@ func resourceHealthcheckDNSDelete(ctx context.Context, d *schema.ResourceData, m
 	return nil
 }
 
-func resourceHealthcheckDNSCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceHealthcheckTCPCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	ctx, cancel := context.WithTimeout(ctx, d.Timeout(schema.TimeoutCreate))
 	defer cancel()
 
 	client := GetAppclacksClient(meta)
 
-	healthcheck := apitypes.CreateDNSHealthcheckInput{
+	healthcheck := apitypes.CreateTCPHealthcheckInput{
 		Name:     d.Get(resHealthcheckName).(string),
 		Interval: d.Get(resHealthcheckInterval).(string),
 		Timeout:  d.Get(resHealthcheckTimeout).(string),
 		Enabled:  d.Get(resHealthcheckEnabled).(bool),
-		HealthcheckDNSDefinition: apitypes.HealthcheckDNSDefinition{
-			Domain: d.Get(resHealthcheckDNSDomain).(string),
+		HealthcheckTCPDefinition: apitypes.HealthcheckTCPDefinition{
+			Target: d.Get(resHealthcheckTarget).(string),
+			Port:   uint(d.Get(resHealthcheckPort).(int)),
 		},
 	}
 
@@ -166,27 +159,20 @@ func resourceHealthcheckDNSCreate(ctx context.Context, d *schema.ResourceData, m
 		healthcheck.Labels = labels
 	}
 
-	if set, ok := d.Get(resHealthcheckDNSExpectedIPs).(*schema.Set); ok {
-		if l := set.Len(); l > 0 {
-			list := make([]string, l)
-			for i, v := range set.List() {
-				list[i] = v.(string)
-			}
-			healthcheck.ExpectedIPs = list
-
-		}
+	if v, ok := d.GetOk(resHealthcheckTCPShouldFail); ok {
+		healthcheck.HealthcheckTCPDefinition.ShouldFail = v.(bool)
 	}
 
-	result, err := client.CreateDNSHealthcheck(ctx, healthcheck)
+	result, err := client.CreateTCPHealthcheck(ctx, healthcheck)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
 	d.SetId(result.ID)
-	return resourceHealthcheckDNSRead(ctx, d, meta)
+	return resourceHealthcheckTCPRead(ctx, d, meta)
 }
 
-func resourceHealthcheckDNSRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceHealthcheckTCPRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	ctx, cancel := context.WithTimeout(ctx, d.Timeout(schema.TimeoutCreate))
 	defer cancel()
 	client := GetAppclacksClient(meta)
@@ -202,13 +188,13 @@ func resourceHealthcheckDNSRead(ctx context.Context, d *schema.ResourceData, met
 		}
 		return diag.FromErr(err)
 	}
-	return diag.FromErr(resourceDNSHealthcheckApply(ctx, d, &result))
+	return diag.FromErr(resourceTCPHealthcheckApply(ctx, d, &result))
 }
 
-func resourceDNSHealthcheckApply(_ context.Context, d *schema.ResourceData, healthcheck *apitypes.Healthcheck) error {
+func resourceTCPHealthcheckApply(_ context.Context, d *schema.ResourceData, healthcheck *apitypes.Healthcheck) error {
 
-	if healthcheck.Type != "dns" {
-		return fmt.Errorf("Invalid healthcheck type. Expecting dns, got %s", healthcheck.Type)
+	if healthcheck.Type != "tcp" {
+		return fmt.Errorf("Invalid healthcheck type. Expecting tcp, got %s", healthcheck.Type)
 	}
 
 	if err := d.Set(resHealthcheckName, healthcheck.Name); err != nil {
@@ -237,19 +223,21 @@ func resourceDNSHealthcheckApply(_ context.Context, d *schema.ResourceData, heal
 		return err
 	}
 
-	definition, ok := healthcheck.Definition.(apitypes.HealthcheckDNSDefinition)
+	definition, ok := healthcheck.Definition.(apitypes.HealthcheckTCPDefinition)
 	if !ok {
-		return errors.New("Invalid healthcheck definition for DNS health check")
+		return errors.New("Invalid healthcheck definition for TCP health check")
 	}
 
-	if err := d.Set(resHealthcheckDNSDomain, definition.Domain); err != nil {
+	if err := d.Set(resHealthcheckTarget, definition.Target); err != nil {
 		return err
 	}
 
-	if len(definition.ExpectedIPs) != 0 {
-		if err := d.Set(resHealthcheckDNSExpectedIPs, definition.ExpectedIPs); err != nil {
-			return err
-		}
+	if err := d.Set(resHealthcheckPort, definition.Port); err != nil {
+		return err
+	}
+
+	if err := d.Set(resHealthcheckTCPShouldFail, definition.ShouldFail); err != nil {
+		return err
 	}
 
 	return nil
