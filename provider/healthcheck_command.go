@@ -18,38 +18,46 @@ const (
 
 func resourceHealthcheckCommand() *schema.Resource {
 	return &schema.Resource{
+		Description: "Execute an arbitrary shell command",
 		Schema: map[string]*schema.Schema{
 			resHealthcheckName: {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "Health check name",
 			},
 			resHealthcheckDescription: {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Health check description",
 			},
 			resHealthcheckLabels: {
-				Type:     schema.TypeMap,
-				Elem:     &schema.Schema{Type: schema.TypeString},
-				Optional: true,
+				Type:        schema.TypeMap,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Optional:    true,
+				Description: "Health check labels",
 			},
 			resHealthcheckInterval: {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  defaultHealthcheckInterval,
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     defaultHealthcheckInterval,
+				Description: "Health check interval (example: 30s)",
 			},
 			resHealthcheckTimeout: {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  defaultHealthcheckTimeout,
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     defaultHealthcheckTimeout,
+				Description: "Health check timeout (example: 5s)",
 			},
 			resHealthcheckCommandCommand: {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "Health check command",
 			},
 			resHealthcheckCommandArguments: {
-				Type:     schema.TypeSet,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Type:        schema.TypeSet,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Description: "Command arguments",
 			},
 		},
 
