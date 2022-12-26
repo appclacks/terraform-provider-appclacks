@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/appclacks/terraform-provider/provider"
+	"github.com/appclacks/terraform-provider-appclacks/provider"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 )
 

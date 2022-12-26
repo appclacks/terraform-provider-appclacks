@@ -1,4 +1,4 @@
-module github.com/appclacks/terraform-provider
+module github.com/appclacks/terraform-provider-appclacks
 
 go 1.19
 
