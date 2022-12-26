@@ -1,6 +1,8 @@
 # Appclacks Terraform provider
 
-Official Terraform provider for [https://appclacks.com/](https://appclacks.com/).
+Official Terraform provider for [Appclacks](https://appclacks.com/).
+
+See the [documentation](https://registry.terraform.io/providers/appclacks/appclacks/latest/docs) to learn how to use it.
 
 ## Launch the tests
 
