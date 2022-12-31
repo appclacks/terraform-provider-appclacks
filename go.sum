@@ -30,6 +30,8 @@ github.com/appclacks/cli v0.4.1-0.20221223181017-804f80bce958 h1:KDrXjarzWh9Amaw
 github.com/appclacks/cli v0.4.1-0.20221223181017-804f80bce958/go.mod h1:UCZn3xXwpl15tmTFZR6RaQ+9Xc8VUt+EarXKr60pC9o=
 github.com/appclacks/cli v0.4.1-0.20221230220150-4299738cce9f h1:ZB75AFnlST9IYU/nel9xMtkmM82fMhCfTIOIqm402AY=
 github.com/appclacks/cli v0.4.1-0.20221230220150-4299738cce9f/go.mod h1:UCZn3xXwpl15tmTFZR6RaQ+9Xc8VUt+EarXKr60pC9o=
+github.com/appclacks/cli v0.5.0 h1:GZ382cMj3w0QkBxZTcQMvLR0UcWU/A84sgSJXRO1Vms=
+github.com/appclacks/cli v0.5.0/go.mod h1:UCZn3xXwpl15tmTFZR6RaQ+9Xc8VUt+EarXKr60pC9o=
 github.com/appclacks/go-types v0.0.0-20221217093431-7bdb84d911b4 h1:7rPxIJKs6tOzHGjNCMA1MvWXVpFAq3i8QIIuw/5bDak=
 github.com/appclacks/go-types v0.0.0-20221217093431-7bdb84d911b4/go.mod h1:ULkbKlyVigBCY+eSEV0scorq+akwJlVbdnLI5xI8IwU=
 github.com/armon/go-radix v0.0.0-20180808171621-7fddfc383310/go.mod h1:ufUuZ+zHj4x4TnLV4JWEpy2hxWSpsRywHrMgIH9cCH8=

@@ -8,6 +8,8 @@ terraform {
 }
 
 provider "appclacks" {
+  organization_id = ""
+  token = ""
 }
 
 resource "appclacks_healthcheck_command" "test_command" {

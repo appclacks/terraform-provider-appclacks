@@ -23,6 +23,8 @@ terraform {
 }
 
 provider "appclacks" {
+  organization_id = ""
+  token = ""
 }
 
 resource "appclacks_healthcheck_command" "test_command" {
@@ -101,3 +103,5 @@ resource "appclacks_healthcheck_tcp" "test_tcp" {
 ### Optional
 
 - `api_url` (String)
+- `organization_id` (String, Sensitive) The organization ID to use for the Appclacks API
+- `token` (String, Sensitive) The token to use for the Appclacks API

@@ -3,7 +3,7 @@ module github.com/appclacks/terraform-provider-appclacks
 go 1.19
 
 require (
-	github.com/appclacks/cli v0.4.1-0.20221230220150-4299738cce9f
+	github.com/appclacks/cli v0.5.0
 	github.com/appclacks/go-types v0.0.0-20221217093431-7bdb84d911b4
 	github.com/hashicorp/go-cty v1.4.1-0.20200414143053-d3edf31b6320
 	github.com/hashicorp/terraform-plugin-docs v0.13.0
