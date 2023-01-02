@@ -26,6 +26,9 @@ terraform {
   required_version = ">= 0.1.0"
 }
 
+// You can also export the APPCLACKS_ORGANIZATION_ID and
+// the APPCLACKS_TOKEN environment variables to configure
+// authentication
 provider "appclacks" {
   organization_id = ""
   token = ""
