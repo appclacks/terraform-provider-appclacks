@@ -22,9 +22,9 @@ func Provider() *schema.Provider {
 
 		Schema: map[string]*schema.Schema{
 			"api_url": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  defaultAPIURL,
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("APPCLACKS_API_URL", defaultAPIURL),
 			},
 			"organization_id": {
 				Type:        schema.TypeString,
