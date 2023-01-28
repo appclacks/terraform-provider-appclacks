@@ -24,3 +24,7 @@ export APPCLACKS_TOKEN='<token>'
 export TF_ACC=true
 go test -v -race ./...
 ```
+
+## Generate documentation
+
+go generate ./...

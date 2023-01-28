@@ -20,6 +20,9 @@ resource "appclacks_healthcheck_http" "test_http" {
   labels = {
     "env": "prod"
   }
+  query = {
+    "param1": "value"
+  }
   target = "api.appclacks.com"
   port = 443
   protocol = "https"
@@ -55,6 +58,7 @@ resource "appclacks_healthcheck_http" "test_http" {
 - `method` (String) Health check HTTP method
 - `path` (String) Health check request HTTP path
 - `protocol` (String) Health check protocol to use (http or https)
+- `query` (Map of String) Health check request HTTP query parameters
 - `redirect` (Boolean) Follow redirections
 - `timeout` (String) Health check timeout (example: 5s)
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))

@@ -6,6 +6,9 @@ resource "appclacks_healthcheck_http" "test_http" {
   labels = {
     "env": "prod"
   }
+  query = {
+    "param1": "value"
+  }
   target = "api.appclacks.com"
   port = 443
   protocol = "https"
