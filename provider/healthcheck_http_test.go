@@ -31,6 +31,9 @@ resource "appclacks_healthcheck_http" "check_http" {
   headers = {
     "a": "b"
   }
+  query = {
+    "p1": "p2"
+  }
   protocol = "http"
   path = "/foo"
   cert = "/tmp/foocert"
@@ -56,6 +59,9 @@ resource "appclacks_healthcheck_http" "check_http" {
   valid_status = [201]
   headers = {
     "a": "b2"
+  }
+  query = {
+    "p3": "p4"
   }
   protocol = "https"
   path = "/bar"
@@ -89,6 +95,7 @@ func TestAccResourceHealthcheckHTTP(t *testing.T) {
 						"protocol":       validateString("http"),
 						"labels.check":   validateString("http"),
 						"headers.a":      validateString("b"),
+						"query.p1":       validateString("p2"),
 						"path":           validateString("/foo"),
 						"body":           validateString("foo"),
 						"cert":           validateString("/tmp/foocert"),
@@ -113,6 +120,7 @@ func TestAccResourceHealthcheckHTTP(t *testing.T) {
 						"target":         validateString("google.fr"),
 						"labels.check":   validateString("http2"),
 						"headers.a":      validateString("b2"),
+						"query.p3":       validateString("p4"),
 						"protocol":       validateString("https"),
 						"path":           validateString("/bar"),
 						"body":           validateString("bar"),
@@ -138,6 +146,7 @@ func TestAccResourceHealthcheckHTTP(t *testing.T) {
 							"labels.check":   validateString("http2"),
 							"target":         validateString("google.fr"),
 							"headers.a":      validateString("b2"),
+							"query.p3":       validateString("p4"),
 							"protocol":       validateString("https"),
 							"path":           validateString("/bar"),
 							"body":           validateString("bar"),

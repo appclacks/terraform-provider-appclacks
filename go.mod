@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/appclacks/cli v0.5.0
-	github.com/appclacks/go-types v0.0.0-20221217093431-7bdb84d911b4
+	github.com/appclacks/go-types v0.0.0-20230125231242-030937520db1
 	github.com/hashicorp/go-cty v1.4.1-0.20200414143053-d3edf31b6320
 	github.com/hashicorp/terraform-plugin-docs v0.13.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.24.1

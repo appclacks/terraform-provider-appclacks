@@ -18,6 +18,7 @@ const (
 	resHealthcheckHTTPBodyRegexp  = "body_regexp"
 	resHealthcheckHTTPValidStatus = "valid_status"
 	resHealthcheckHTTPHeaders     = "headers"
+	resHealthcheckHTTPQuery       = "query"
 	resHealthcheckHTTPProtocol    = "protocol"
 	resHealthcheckHTTPPath        = "path"
 )
@@ -109,6 +110,12 @@ func resourceHealthcheckHTTP() *schema.Resource {
 				Optional:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 				Description: "Health check request HTTP headers",
+			},
+			resHealthcheckHTTPQuery: {
+				Type:        schema.TypeMap,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Description: "Health check request HTTP query parameters",
 			},
 			resHealthcheckHTTPBodyRegexp: {
 				Type:        schema.TypeSet,
@@ -225,6 +232,13 @@ func resourceHealthcheckHTTPUpdate(ctx context.Context, d *schema.ResourceData, 
 		}
 		update.HealthcheckHTTPDefinition.Headers = headers
 	}
+	if l, ok := d.GetOk(resHealthcheckHTTPQuery); ok {
+		query := make(map[string]string)
+		for k, v := range l.(map[string]interface{}) {
+			query[k] = v.(string)
+		}
+		update.HealthcheckHTTPDefinition.Query = query
+	}
 
 	if _, err := client.UpdateHTTPHealthcheck(ctx, update); err != nil {
 		return diag.FromErr(err)
@@ -325,6 +339,13 @@ func resourceHealthcheckHTTPCreate(ctx context.Context, d *schema.ResourceData, 
 		}
 		healthcheck.HealthcheckHTTPDefinition.Headers = headers
 	}
+	if l, ok := d.GetOk(resHealthcheckHTTPQuery); ok {
+		query := make(map[string]string)
+		for k, v := range l.(map[string]interface{}) {
+			query[k] = v.(string)
+		}
+		healthcheck.HealthcheckHTTPDefinition.Query = query
+	}
 
 	result, err := client.CreateHTTPHealthcheck(ctx, healthcheck)
 	if err != nil {
@@ -421,6 +442,9 @@ func resourceHTTPHealthcheckApply(_ context.Context, d *schema.ResourceData, hea
 		return err
 	}
 	if err := d.Set(resHealthcheckHTTPHeaders, definition.Headers); err != nil {
+		return err
+	}
+	if err := d.Set(resHealthcheckHTTPQuery, definition.Query); err != nil {
 		return err
 	}
 	if err := d.Set(resHealthcheckTLSKey, definition.Key); err != nil {
