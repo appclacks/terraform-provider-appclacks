@@ -1,6 +1,6 @@
 module github.com/appclacks/terraform-provider-appclacks
 
-go 1.19
+go 1.20
 
 require (
 	github.com/appclacks/cli v0.12.0
