@@ -19,7 +19,6 @@ const (
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		ConfigureContextFunc: providerConfigure,
-
 		Schema: map[string]*schema.Schema{
 			"api_url": {
 				Type:        schema.TypeString,
@@ -27,15 +26,17 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.EnvDefaultFunc("APPCLACKS_API_URL", defaultAPIURL),
 			},
 			"organization_id": {
+				Default:     "",
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				Sensitive:   true,
 				DefaultFunc: schema.EnvDefaultFunc("APPCLACKS_ORGANIZATION_ID", ""),
 				Description: "The organization ID to use for the Appclacks API",
 			},
 			"token": {
+				Default:     "",
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				Sensitive:   true,
 				DefaultFunc: schema.EnvDefaultFunc("APPCLACKS_TOKEN", ""),
 				Description: "The token to use for the Appclacks API",
@@ -43,7 +44,6 @@ func Provider() *schema.Provider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{},
-
 		ResourcesMap: map[string]*schema.Resource{
 			"appclacks_healthcheck_dns":     resourceHealthcheckDNS(),
 			"appclacks_healthcheck_tcp":     resourceHealthcheckTCP(),
@@ -56,15 +56,17 @@ func Provider() *schema.Provider {
 
 // providerConfigure parses the config into the Terraform provider meta object
 func providerConfigure(_ context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-
-	return client.New(
+	client, err := client.New(
 		d.Get("api_url").(string),
 		client.WithToken(
 			client.OrganizationID(d.Get("organization_id").(string)),
 			client.Token(d.Get("token").(string)),
 		),
-	), nil
-
+	)
+	if err != nil {
+		return nil, diag.FromErr(err)
+	}
+	return client, nil
 }
 
 func GetAppclacksClient(meta interface{}) *client.Client {

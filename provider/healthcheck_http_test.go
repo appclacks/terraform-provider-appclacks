@@ -185,7 +185,7 @@ func testAccCheckResourceHTTPCheckDestroy(s *terraform.State) error {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 		_, err := client.GetHealthcheck(ctx, apitypes.GetHealthcheckInput{
-			ID: rs.Primary.ID,
+			Identifier: rs.Primary.ID,
 		})
 
 		if err != nil {

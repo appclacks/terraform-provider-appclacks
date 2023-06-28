@@ -362,7 +362,7 @@ func resourceHealthcheckHTTPRead(ctx context.Context, d *schema.ResourceData, me
 	client := GetAppclacksClient(meta)
 
 	result, err := client.GetHealthcheck(ctx, apitypes.GetHealthcheckInput{
-		ID: d.Id(),
+		Identifier: d.Id(),
 	})
 	if err != nil {
 		if errors.Is(err, goclient.ErrNotFound) {

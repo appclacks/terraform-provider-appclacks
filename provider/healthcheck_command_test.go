@@ -119,7 +119,7 @@ func testAccCheckResourceCheckExists(name string, check *apitypes.Healthcheck) r
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 		result, err := client.GetHealthcheck(ctx, apitypes.GetHealthcheckInput{
-			ID: rs.Primary.ID,
+			Identifier: rs.Primary.ID,
 		})
 		if err != nil {
 			return err
@@ -164,7 +164,7 @@ func testAccCheckResourceCommandCheckDestroy(s *terraform.State) error {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 		_, err := client.GetHealthcheck(ctx, apitypes.GetHealthcheckInput{
-			ID: rs.Primary.ID,
+			Identifier: rs.Primary.ID,
 		})
 
 		if err != nil {
