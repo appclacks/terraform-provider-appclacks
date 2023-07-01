@@ -16,4 +16,5 @@ resource "appclacks_healthcheck_http" "test_http" {
   path = "/healthz"
   valid_status = [200]
   enabled = true
+  host = "api.appclacks.com"
 }

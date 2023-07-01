@@ -28,8 +28,7 @@ terraform {
 
 // You can also export the APPCLACKS_ORGANIZATION_ID and
 // the APPCLACKS_TOKEN environment variables to configure
-// authentication or configure the local Appclacks
-// configuration file
+// authentication
 provider "appclacks" {
   organization_id = ""
   token = ""
@@ -111,9 +110,8 @@ Configuration for the Appclacks provider can be provided in the following ways:
 
 1. Parameters in the provider configuration
 2. Environment variables
-3. Local configuration file
 
-To know more about authentication and about how generating an Appclacks API token, please refer to the [Appclacks documentation](https://www.doc.appclacks.com/getting-started/#authentication).
+For obtaining an Appclacks API token, please refer to the [Appclacks documentation](https://www.doc.appclacks.com/getting-started/#authentication).
 
 ### Provider Configuration
 

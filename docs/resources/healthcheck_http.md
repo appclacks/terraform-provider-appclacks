@@ -52,6 +52,7 @@ resource "appclacks_healthcheck_http" "test_http" {
 - `description` (String) Health check description
 - `enabled` (Boolean) Enable the health check on the Appclacks platform
 - `headers` (Map of String) Health check request HTTP headers
+- `host` (String) Host header to use for the health check HTTP request
 - `interval` (String) Health check interval (example: 30s)
 - `key` (String) TLS key file to use for the TLS connection
 - `labels` (Map of String) Health check labels
