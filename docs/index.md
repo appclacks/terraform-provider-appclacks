@@ -110,6 +110,7 @@ Configuration for the Appclacks provider can be provided in the following ways:
 
 1. Parameters in the provider configuration
 2. Environment variables
+3. Appclacks local configuration file
 
 For obtaining an Appclacks API token, please refer to the [Appclacks documentation](https://www.doc.appclacks.com/getting-started/#authentication).
 
