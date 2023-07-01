@@ -21,6 +21,7 @@ const (
 	resHealthcheckHTTPQuery       = "query"
 	resHealthcheckHTTPProtocol    = "protocol"
 	resHealthcheckHTTPPath        = "path"
+	resHealthcheckHTTPHost        = "host"
 )
 
 func resourceHealthcheckHTTP() *schema.Resource {
@@ -138,6 +139,11 @@ func resourceHealthcheckHTTP() *schema.Resource {
 				Optional:    true,
 				Description: "TLS cacert file to use for the TLS connection",
 			},
+			resHealthcheckHTTPHost: {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Host header to use for the health check HTTP request",
+			},
 		},
 
 		CreateContext: resourceHealthcheckHTTPCreate,
@@ -214,6 +220,9 @@ func resourceHealthcheckHTTPUpdate(ctx context.Context, d *schema.ResourceData, 
 	}
 	if v, ok := d.GetOk(resHealthcheckTLSKey); ok {
 		update.HealthcheckHTTPDefinition.Key = v.(string)
+	}
+	if v, ok := d.GetOk(resHealthcheckHTTPHost); ok {
+		update.HealthcheckHTTPDefinition.Host = v.(string)
 	}
 	if set, ok := d.Get(resHealthcheckHTTPBodyRegexp).(*schema.Set); ok {
 		if l := set.Len(); l > 0 {
@@ -321,6 +330,9 @@ func resourceHealthcheckHTTPCreate(ctx context.Context, d *schema.ResourceData, 
 	}
 	if v, ok := d.GetOk(resHealthcheckTLSKey); ok {
 		healthcheck.HealthcheckHTTPDefinition.Key = v.(string)
+	}
+	if v, ok := d.GetOk(resHealthcheckHTTPHost); ok {
+		healthcheck.HealthcheckHTTPDefinition.Host = v.(string)
 	}
 	if set, ok := d.Get(resHealthcheckHTTPBodyRegexp).(*schema.Set); ok {
 		if l := set.Len(); l > 0 {
@@ -454,6 +466,9 @@ func resourceHTTPHealthcheckApply(_ context.Context, d *schema.ResourceData, hea
 		return err
 	}
 	if err := d.Set(resHealthcheckTLSCacert, definition.Cacert); err != nil {
+		return err
+	}
+	if err := d.Set(resHealthcheckHTTPHost, definition.Host); err != nil {
 		return err
 	}
 

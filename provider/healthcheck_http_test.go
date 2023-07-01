@@ -39,6 +39,7 @@ resource "appclacks_healthcheck_http" "check_http" {
   cert = "/tmp/foocert"
   cacert = "/tmp/foocacert"
   key = "/tmp/fookey"
+  host = "appclacks.com"
 }
 `
 
@@ -68,6 +69,7 @@ resource "appclacks_healthcheck_http" "check_http" {
   cert = "/tmp/foocert2"
   cacert = "/tmp/foocacert2"
   key = "/tmp/fookey2"
+  host = "api.appclacks.com"
 }
 `
 )
@@ -101,6 +103,7 @@ func TestAccResourceHealthcheckHTTP(t *testing.T) {
 						"cert":           validateString("/tmp/foocert"),
 						"key":            validateString("/tmp/fookey"),
 						"cacert":         validateString("/tmp/foocacert"),
+						"host":           validateString("appclacks.com"),
 					}),
 				),
 			},
@@ -127,6 +130,7 @@ func TestAccResourceHealthcheckHTTP(t *testing.T) {
 						"cert":           validateString("/tmp/foocert2"),
 						"key":            validateString("/tmp/fookey2"),
 						"cacert":         validateString("/tmp/foocacert2"),
+						"host":           validateString("api.appclacks.com"),
 					}),
 				),
 			},
@@ -153,6 +157,7 @@ func TestAccResourceHealthcheckHTTP(t *testing.T) {
 							"cert":           validateString("/tmp/foocert2"),
 							"key":            validateString("/tmp/fookey2"),
 							"cacert":         validateString("/tmp/foocacert2"),
+							"host":           validateString("api.appclacks.com"),
 						},
 						s[0].Attributes)
 				},
