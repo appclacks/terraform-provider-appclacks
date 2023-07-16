@@ -30,6 +30,7 @@ resource "appclacks_healthcheck_http" "test_http" {
   path = "/healthz"
   valid_status = [200]
   enabled = true
+  host = "api.appclacks.com"
 }
 ```
 
@@ -53,6 +54,7 @@ resource "appclacks_healthcheck_http" "test_http" {
 - `enabled` (Boolean) Enable the health check on the Appclacks platform
 - `headers` (Map of String) Health check request HTTP headers
 - `host` (String) Host header to use for the health check HTTP request
+- `insecure` (Boolean) Accept insecure TLS connections
 - `interval` (String) Health check interval (example: 30s)
 - `key` (String) TLS key file to use for the TLS connection
 - `labels` (Map of String) Health check labels
@@ -61,6 +63,7 @@ resource "appclacks_healthcheck_http" "test_http" {
 - `protocol` (String) Health check protocol to use (http or https)
 - `query` (Map of String) Health check request HTTP query parameters
 - `redirect` (Boolean) Follow redirections
+- `server_name` (String) Server name to use for the TLS connection
 - `timeout` (String) Health check timeout (example: 5s)
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 

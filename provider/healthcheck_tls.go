@@ -86,7 +86,7 @@ func resourceHealthcheckTLS() *schema.Resource {
 			resHealthcheckTLSServerName: {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "Server name to use for the TLS connection. Mandatory if insecure is not set.",
+				Description: "Server name to use for the TLS connection",
 			},
 			resHealthcheckTLSInsecure: {
 				Type:        schema.TypeBool,

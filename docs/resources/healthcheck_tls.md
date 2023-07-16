@@ -48,7 +48,7 @@ resource "appclacks_healthcheck_tls" "test_tls" {
 - `interval` (String) Health check interval (example: 30s)
 - `key` (String) TLS key file to use for the TLS connection
 - `labels` (Map of String) Health check labels
-- `server_name` (String) Server name to use for the TLS connection. Mandatory if insecure is not set.
+- `server_name` (String) Server name to use for the TLS connection
 - `timeout` (String) Health check timeout (example: 5s)
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 

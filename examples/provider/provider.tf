@@ -54,6 +54,8 @@ resource "appclacks_healthcheck_http" "test_http" {
   path = "/healthz"
   valid_status = [200]
   enabled = true
+  insecure = true
+  server_name = "api.appclacks.com"
 }
 
 resource "appclacks_healthcheck_tls" "test_tls" {
@@ -69,6 +71,7 @@ resource "appclacks_healthcheck_tls" "test_tls" {
   expiration_delay = "168h"
   server_name = "appclacks.com"
   enabled = true
+  insecure = false
 }
 
 resource "appclacks_healthcheck_tcp" "test_tcp" {

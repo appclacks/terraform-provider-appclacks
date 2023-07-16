@@ -144,6 +144,16 @@ func resourceHealthcheckHTTP() *schema.Resource {
 				Optional:    true,
 				Description: "Host header to use for the health check HTTP request",
 			},
+			resHealthcheckTLSServerName: {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Server name to use for the TLS connection",
+			},
+			resHealthcheckTLSInsecure: {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Accept insecure TLS connections",
+			},
 		},
 
 		CreateContext: resourceHealthcheckHTTPCreate,
@@ -223,6 +233,12 @@ func resourceHealthcheckHTTPUpdate(ctx context.Context, d *schema.ResourceData, 
 	}
 	if v, ok := d.GetOk(resHealthcheckHTTPHost); ok {
 		update.HealthcheckHTTPDefinition.Host = v.(string)
+	}
+	if v, ok := d.GetOk(resHealthcheckTLSInsecure); ok {
+		update.HealthcheckHTTPDefinition.Insecure = v.(bool)
+	}
+	if v, ok := d.GetOk(resHealthcheckTLSServerName); ok {
+		update.HealthcheckHTTPDefinition.ServerName = v.(string)
 	}
 	if set, ok := d.Get(resHealthcheckHTTPBodyRegexp).(*schema.Set); ok {
 		if l := set.Len(); l > 0 {
@@ -333,6 +349,12 @@ func resourceHealthcheckHTTPCreate(ctx context.Context, d *schema.ResourceData, 
 	}
 	if v, ok := d.GetOk(resHealthcheckHTTPHost); ok {
 		healthcheck.HealthcheckHTTPDefinition.Host = v.(string)
+	}
+	if v, ok := d.GetOk(resHealthcheckTLSInsecure); ok {
+		healthcheck.HealthcheckHTTPDefinition.Insecure = v.(bool)
+	}
+	if v, ok := d.GetOk(resHealthcheckTLSServerName); ok {
+		healthcheck.HealthcheckHTTPDefinition.ServerName = v.(string)
 	}
 	if set, ok := d.Get(resHealthcheckHTTPBodyRegexp).(*schema.Set); ok {
 		if l := set.Len(); l > 0 {
@@ -469,6 +491,12 @@ func resourceHTTPHealthcheckApply(_ context.Context, d *schema.ResourceData, hea
 		return err
 	}
 	if err := d.Set(resHealthcheckHTTPHost, definition.Host); err != nil {
+		return err
+	}
+	if err := d.Set(resHealthcheckTLSInsecure, definition.Insecure); err != nil {
+		return err
+	}
+	if err := d.Set(resHealthcheckTLSServerName, definition.ServerName); err != nil {
 		return err
 	}
 

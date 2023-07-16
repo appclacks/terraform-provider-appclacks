@@ -27,4 +27,6 @@ go test -v -race ./...
 
 ## Generate documentation
 
+```
 go generate ./...
+```
