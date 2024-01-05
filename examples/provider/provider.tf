@@ -9,7 +9,9 @@ terraform {
 
 // You can also export the APPCLACKS_ORGANIZATION_ID and
 // the APPCLACKS_TOKEN environment variables to configure
-// authentication
+// authentication, or configure the HOME/.config/appclacks/appaclacks.yaml
+// file.
+// See the documentation for more information about authentication: https://www.doc.appclacks.com/getting-started/
 provider "appclacks" {
   organization_id = ""
   token = ""

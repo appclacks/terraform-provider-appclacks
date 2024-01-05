@@ -6,13 +6,15 @@ description: |-
 
 # Appclacks Provider
 
-The "Appclacks" provider allows the use of the Appclacks cloud monitoring platform within Terraform configurations.
+The "Appclacks" provider allows the use of the [Appclacks cloud monitoring platform](https://appclacks.com) within Terraform configurations.
 
 Appclacks is a cloud monitoring platform allowing users to create, manage and run various health checks to monitor the health of websites and infrastructures.
 
 Appclacks can monitor public endpoints by executing configured health checks on them from multiple point of presences. But unlike alternatives,  Appclacks can also be used to monitor private infrastructures.
 
 The prober used by Appclacks named Cabourotte is a free software that you can host on your private infrastructure and plug on the Appclacks API to autoconfigure it.
+
+More information about Appclacks can be found in the [official documentation](https://www.doc.appclacks.com/).
 
 ## Example Usage
 
@@ -28,7 +30,9 @@ terraform {
 
 // You can also export the APPCLACKS_ORGANIZATION_ID and
 // the APPCLACKS_TOKEN environment variables to configure
-// authentication
+// authentication, or configure the HOME/.config/appclacks/appaclacks.yaml
+// file.
+// See the documentation for more information about authentication: https://www.doc.appclacks.com/getting-started/
 provider "appclacks" {
   organization_id = ""
   token = ""
@@ -113,7 +117,6 @@ Configuration for the Appclacks provider can be provided in the following ways:
 
 1. Parameters in the provider configuration
 2. Environment variables
-3. Appclacks local configuration file
 
 For obtaining an Appclacks API token, please refer to the [Appclacks documentation](https://www.doc.appclacks.com/getting-started/#authentication).
 
