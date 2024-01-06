@@ -25,7 +25,6 @@ terraform {
       source = "appclacks/appclacks"
     }
   }
-  required_version = ">= 0.1.0"
 }
 
 // You can also export the APPCLACKS_ORGANIZATION_ID and
