@@ -31,6 +31,22 @@ func Provider() *schema.Provider {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"tls_key": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"tls_cert": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"tls_cacert": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"insecure": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{},
@@ -46,22 +62,40 @@ func Provider() *schema.Provider {
 
 // providerConfigure parses the config into the Terraform provider meta object
 func providerConfigure(_ context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	client, err := client.New()
-	if err != nil {
-		return nil, diag.FromErr(err)
-	}
+	options := []client.ClientOption{}
 	configEndpoint, ok := d.GetOk("api_endpoint")
 	if ok {
-		client.SetEndpoint(configEndpoint.(string))
+		options = append(options, client.WithEndpoint(configEndpoint.(string)))
 	}
 	configUsername, ok := d.GetOk("username")
 	if ok {
-		client.SetUsername(configUsername.(string))
+		options = append(options, client.WithUsername(configUsername.(string)))
 	}
 	configPassword, ok := d.GetOk("password")
 	if ok {
-		client.SetPassword(configPassword.(string))
+		options = append(options, client.WithPassword(configPassword.(string)))
 	}
+	configTLSKey, ok := d.GetOk("tls_key")
+	if ok {
+		options = append(options, client.WithKey(configTLSKey.(string)))
+	}
+	configTLSCert, ok := d.GetOk("tls_cert")
+	if ok {
+		options = append(options, client.WithCert(configTLSCert.(string)))
+	}
+	configTLSCacert, ok := d.GetOk("tls_cacert")
+	if ok {
+		options = append(options, client.WithCacert(configTLSCacert.(string)))
+	}
+	configTLSInsecure, ok := d.GetOk("insecure")
+	if ok {
+		options = append(options, client.WithInsecure(configTLSInsecure.(bool)))
+	}
+	client, err := client.New(options...)
+	if err != nil {
+		return nil, diag.FromErr(err)
+	}
+
 	return client, nil
 }
 

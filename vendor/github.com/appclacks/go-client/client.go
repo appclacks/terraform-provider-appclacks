@@ -17,6 +17,10 @@ type Client struct {
 	username string
 	password string
 	endpoint string
+	key      string
+	cert     string
+	cacert   string
+	insecure bool
 }
 
 var (
@@ -35,27 +39,96 @@ func loadEnv(client *Client) {
 	if os.Getenv("APPCLACKS_API_ENDPOINT") != "" {
 		client.endpoint = os.Getenv("APPCLACKS_API_ENDPOINT")
 	}
+
+	if os.Getenv("APPCLACKS_TLS_KEY") != "" {
+		client.key = os.Getenv("APPCLACKS_TLS_KEY")
+	}
+	if os.Getenv("APPCLACKS_TLS_CERT") != "" {
+		client.cert = os.Getenv("APPCLACKS_TLS_CERT")
+	}
+	if os.Getenv("APPCLACKS_TLS_CACERT") != "" {
+		client.cacert = os.Getenv("APPCLACKS_TLS_CACERT")
+	}
+	insecure := os.Getenv("APPCLACKS_TLS_INSECURE")
+	if insecure == "true" {
+		client.insecure = true
+	}
 }
 
-func New() (*Client, error) {
+type ClientOption func(c *Client) error
+
+func New(options ...ClientOption) (*Client, error) {
 	client := &Client{
 		http: &http.Client{},
 	}
 
 	loadEnv(client)
+	for _, option := range options {
+		err := option(client)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if client.cert != "" || client.key != "" || client.cacert != "" || client.insecure {
+		tlsConfig, err := getTLSConfig(client.key, client.cert, client.cacert, "", client.insecure)
+		if err != nil {
+			return nil, err
+		}
+		transport := &http.Transport{
+			TLSClientConfig: tlsConfig,
+		}
+		client.http.Transport = transport
+	}
 	return client, nil
 }
 
-func (c *Client) SetUsername(username string) {
-	c.username = username
+func WithUsername(username string) ClientOption {
+	return func(c *Client) error {
+		c.username = username
+		return nil
+	}
 }
 
-func (c *Client) SetPassword(password string) {
-	c.password = password
+func WithPassword(password string) ClientOption {
+	return func(c *Client) error {
+		c.password = password
+		return nil
+	}
 }
 
-func (c *Client) SetEndpoint(endpoint string) {
-	c.endpoint = endpoint
+func WithEndpoint(endpoint string) ClientOption {
+	return func(c *Client) error {
+		c.endpoint = endpoint
+		return nil
+	}
+}
+
+func WithKey(key string) ClientOption {
+	return func(c *Client) error {
+		c.key = key
+		return nil
+	}
+}
+
+func WithCert(cert string) ClientOption {
+	return func(c *Client) error {
+		c.cert = cert
+		return nil
+	}
+}
+
+func WithCacert(cacert string) ClientOption {
+	return func(c *Client) error {
+		c.cacert = cacert
+		return nil
+	}
+}
+
+func WithInsecure(insecure bool) ClientOption {
+	return func(c *Client) error {
+		c.insecure = insecure
+		return nil
+	}
 }
 
 func (c *Client) sendRequest(ctx context.Context, url string, method string, body any, result any, queryParams map[string]string) (*http.Response, error) {

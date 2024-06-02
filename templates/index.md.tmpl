@@ -36,6 +36,8 @@ public version control system.
 
 Credentials can be provided by adding an `api_endpoint`, `username`, and `password`, to the `appclacks` provider block.
 
+TLS options can be set using the `tls_key`, `tls_cert`, `tls_cacert` and `insecure` options.
+
 Usage:
 
 ```terraform
@@ -49,6 +51,8 @@ provider "appclacks" {
 ### Environment Variables
 
 Credentials can also be provided by setting the `APPCLACKS_API_ENDPOINT`, `APPCLACKS_USERNAME`, and optionally `APPCLACKS_PASSWORD` environment variables.
+
+TLS options can be set with `APPCLACKS_TLS_KEY`, `APPCLACKS_TLS_CERT`, `APPCLACKS_TLS_CACERT` and `APPCLACKS_TLS_INSECURE`.
 
 For example:
 
