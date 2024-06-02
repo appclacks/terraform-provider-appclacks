@@ -6,7 +6,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/appclacks/cli/client"
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -31,21 +30,10 @@ func init() {
 }
 
 func testAccPreCheck(t *testing.T) {
-	org := os.Getenv("APPCLACKS_ORGANIZATION_ID")
-	token := os.Getenv("APPCLACKS_TOKEN")
-	if org == "" || token == "" {
-		msg := "APPCLACKS_ORGANIZATION_ID and APPCLACKS_TOKEN must be set, or the Appclacks client configuration file should be configured for acceptance tests"
-		configPath, err := client.GetConfigFilePath()
-		if err != nil {
-			t.Fatal(msg, err)
-		}
-		config, err := client.ReadConfig(configPath)
-		if err != nil {
-			t.Fatal(msg, err)
-		}
-		if len(config.Profiles) == 0 {
-			t.Fatal("APPCLACKS_ORGANIZATION_ID and APPCLACKS_TOKEN must be set for acceptance tests")
-		}
+	endpoint := os.Getenv("APPCLACKS_API_ENDPOINT")
+	if endpoint == "" {
+		msg := "APPCLACKS_API_ENDPOINT must be set to launch tests"
+		t.Fatal(msg)
 	}
 }
 

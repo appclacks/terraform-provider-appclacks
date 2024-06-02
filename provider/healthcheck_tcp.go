@@ -5,8 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	goclient "github.com/appclacks/cli/client"
-	apitypes "github.com/appclacks/go-types"
+	goclient "github.com/appclacks/go-client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -94,13 +93,13 @@ func resourceHealthcheckTCPUpdate(ctx context.Context, d *schema.ResourceData, m
 	defer cancel()
 	client := GetAppclacksClient(meta)
 
-	update := apitypes.UpdateTCPHealthcheckInput{
+	update := goclient.UpdateTCPHealthcheckInput{
 		ID:       d.Id(),
 		Name:     d.Get(resHealthcheckName).(string),
 		Interval: d.Get(resHealthcheckInterval).(string),
 		Timeout:  d.Get(resHealthcheckTimeout).(string),
 		Enabled:  d.Get(resHealthcheckEnabled).(bool),
-		HealthcheckTCPDefinition: apitypes.HealthcheckTCPDefinition{
+		HealthcheckTCPDefinition: goclient.HealthcheckTCPDefinition{
 			Target: d.Get(resHealthcheckTarget).(string),
 			Port:   uint(d.Get(resHealthcheckPort).(int)),
 		},
@@ -133,7 +132,7 @@ func resourceHealthcheckTCPDelete(ctx context.Context, d *schema.ResourceData, m
 	client := GetAppclacksClient(meta)
 
 	healthcheckID := d.Id()
-	_, err := client.DeleteHealthcheck(ctx, apitypes.DeleteHealthcheckInput{ID: healthcheckID})
+	_, err := client.DeleteHealthcheck(ctx, goclient.DeleteHealthcheckInput{ID: healthcheckID})
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -147,12 +146,12 @@ func resourceHealthcheckTCPCreate(ctx context.Context, d *schema.ResourceData, m
 
 	client := GetAppclacksClient(meta)
 
-	healthcheck := apitypes.CreateTCPHealthcheckInput{
+	healthcheck := goclient.CreateTCPHealthcheckInput{
 		Name:     d.Get(resHealthcheckName).(string),
 		Interval: d.Get(resHealthcheckInterval).(string),
 		Timeout:  d.Get(resHealthcheckTimeout).(string),
 		Enabled:  d.Get(resHealthcheckEnabled).(bool),
-		HealthcheckTCPDefinition: apitypes.HealthcheckTCPDefinition{
+		HealthcheckTCPDefinition: goclient.HealthcheckTCPDefinition{
 			Target: d.Get(resHealthcheckTarget).(string),
 			Port:   uint(d.Get(resHealthcheckPort).(int)),
 		},
@@ -187,7 +186,7 @@ func resourceHealthcheckTCPRead(ctx context.Context, d *schema.ResourceData, met
 	defer cancel()
 	client := GetAppclacksClient(meta)
 
-	result, err := client.GetHealthcheck(ctx, apitypes.GetHealthcheckInput{
+	result, err := client.GetHealthcheck(ctx, goclient.GetHealthcheckInput{
 		Identifier: d.Id(),
 	})
 	if err != nil {
@@ -201,7 +200,7 @@ func resourceHealthcheckTCPRead(ctx context.Context, d *schema.ResourceData, met
 	return diag.FromErr(resourceTCPHealthcheckApply(ctx, d, &result))
 }
 
-func resourceTCPHealthcheckApply(_ context.Context, d *schema.ResourceData, healthcheck *apitypes.Healthcheck) error {
+func resourceTCPHealthcheckApply(_ context.Context, d *schema.ResourceData, healthcheck *goclient.Healthcheck) error {
 
 	if healthcheck.Type != "tcp" {
 		return fmt.Errorf("Invalid healthcheck type. Expecting tcp, got %s", healthcheck.Type)
@@ -233,7 +232,7 @@ func resourceTCPHealthcheckApply(_ context.Context, d *schema.ResourceData, heal
 		return err
 	}
 
-	definition, ok := healthcheck.Definition.(apitypes.HealthcheckTCPDefinition)
+	definition, ok := healthcheck.Definition.(goclient.HealthcheckTCPDefinition)
 	if !ok {
 		return errors.New("Invalid healthcheck definition for TCP health check")
 	}

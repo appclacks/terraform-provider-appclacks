@@ -18,6 +18,12 @@ github.com/apparentlymart/go-textseg/v15 v15.0.0 h1:uYvfpb3DyLSCGWnctWKGj857c6ew
 github.com/apparentlymart/go-textseg/v15 v15.0.0/go.mod h1:K8XmNZdhEBkdlyDdvbmmsvpAG721bKi0joRfFdHIWJ4=
 github.com/appclacks/cli v1.0.0 h1:Yvw0kZcsWjeHRfk74m1ZR5aiItf408da7r5Khc9MOdw=
 github.com/appclacks/cli v1.0.0/go.mod h1:+wRC9L2C3o7C3rtPdeAZ0FIflLYUeGNGI+T7fhXGXDU=
+github.com/appclacks/go-client v0.0.0-20240601155632-3db1fa07abb0 h1:KV8CRzYMgh6k670Bmcku8SaSgDebIt4CCjszmVUKwuo=
+github.com/appclacks/go-client v0.0.0-20240601155632-3db1fa07abb0/go.mod h1:ZOQEaU5H5BTLZr326dMjvVbB+pdkeRX3emyu4cEq9GU=
+github.com/appclacks/go-client v0.0.0-20240601174539-74c9d64e35cd h1:EnLEbh6UEVCYSUrqkZv01deiiKB3jY79lp+JmJeZ/5s=
+github.com/appclacks/go-client v0.0.0-20240601174539-74c9d64e35cd/go.mod h1:ZOQEaU5H5BTLZr326dMjvVbB+pdkeRX3emyu4cEq9GU=
+github.com/appclacks/go-client v0.0.0-20240602132011-291c0d8ca225 h1:Bi2DlXudM58MLRjAEWRNrJe8ChG54r5mE8aJTH6AkUg=
+github.com/appclacks/go-client v0.0.0-20240602132011-291c0d8ca225/go.mod h1:ZOQEaU5H5BTLZr326dMjvVbB+pdkeRX3emyu4cEq9GU=
 github.com/appclacks/go-types v0.0.0-20231220140742-f2e0c61c6eea h1:on7eQ5aDivJ2I4JkyNSR5LxG87ShiO3W3Q6P5P+kIYw=
 github.com/appclacks/go-types v0.0.0-20231220140742-f2e0c61c6eea/go.mod h1:djYgTPlVCW/7sUcPRuqvJOoOKB/uforzYC2Bo2JBPK8=
 github.com/armon/go-radix v0.0.0-20180808171621-7fddfc383310/go.mod h1:ufUuZ+zHj4x4TnLV4JWEpy2hxWSpsRywHrMgIH9cCH8=

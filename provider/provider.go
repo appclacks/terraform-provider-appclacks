@@ -4,14 +4,13 @@ import (
 	"context"
 	"time"
 
-	"github.com/appclacks/cli/client"
+	"github.com/appclacks/go-client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 const (
 	defaultTimeout             = 10 * time.Second
-	defaultAPIURL              = "https://api.appclacks.com"
 	defaultHealthcheckTimeout  = "10s"
 	defaultHealthcheckInterval = "60s"
 )
@@ -20,26 +19,17 @@ func Provider() *schema.Provider {
 	return &schema.Provider{
 		ConfigureContextFunc: providerConfigure,
 		Schema: map[string]*schema.Schema{
-			"api_url": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("APPCLACKS_API_URL", defaultAPIURL),
+			"api_endpoint": {
+				Type:     schema.TypeString,
+				Optional: true,
 			},
-			"organization_id": {
-				Default:     "",
-				Type:        schema.TypeString,
-				Optional:    true,
-				Sensitive:   true,
-				DefaultFunc: schema.EnvDefaultFunc("APPCLACKS_ORGANIZATION_ID", ""),
-				Description: "The organization ID to use for the Appclacks API",
+			"username": {
+				Type:     schema.TypeString,
+				Optional: true,
 			},
-			"token": {
-				Default:     "",
-				Type:        schema.TypeString,
-				Optional:    true,
-				Sensitive:   true,
-				DefaultFunc: schema.EnvDefaultFunc("APPCLACKS_TOKEN", ""),
-				Description: "The token to use for the Appclacks API",
+			"password": {
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 		},
 
@@ -56,15 +46,21 @@ func Provider() *schema.Provider {
 
 // providerConfigure parses the config into the Terraform provider meta object
 func providerConfigure(_ context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	client, err := client.New(
-		d.Get("api_url").(string),
-		client.WithToken(
-			client.OrganizationID(d.Get("organization_id").(string)),
-			client.Token(d.Get("token").(string)),
-		),
-	)
+	client, err := client.New()
 	if err != nil {
 		return nil, diag.FromErr(err)
+	}
+	configEndpoint, ok := d.GetOk("api_endpoint")
+	if ok {
+		client.SetEndpoint(configEndpoint.(string))
+	}
+	configUsername, ok := d.GetOk("username")
+	if ok {
+		client.SetUsername(configUsername.(string))
+	}
+	configPassword, ok := d.GetOk("password")
+	if ok {
+		client.SetPassword(configPassword.(string))
 	}
 	return client, nil
 }

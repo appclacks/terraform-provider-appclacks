@@ -6,8 +6,7 @@ import (
 	"testing"
 	"time"
 
-	goclient "github.com/appclacks/cli/client"
-	apitypes "github.com/appclacks/go-types"
+	goclient "github.com/appclacks/go-client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
@@ -43,7 +42,7 @@ resource "appclacks_healthcheck_command" "check_command" {
 )
 
 func TestAccResourceHealthcheckCommand(t *testing.T) {
-	check := new(apitypes.Healthcheck)
+	check := new(goclient.Healthcheck)
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: testAccProviders,
@@ -104,7 +103,7 @@ func TestAccResourceHealthcheckCommand(t *testing.T) {
 	})
 }
 
-func testAccCheckResourceCheckExists(name string, check *apitypes.Healthcheck) resource.TestCheckFunc {
+func testAccCheckResourceCheckExists(name string, check *goclient.Healthcheck) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[name]
 		if !ok {
@@ -118,7 +117,7 @@ func testAccCheckResourceCheckExists(name string, check *apitypes.Healthcheck) r
 		client := GetAppclacksClient(testAccProvider.Meta())
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-		result, err := client.GetHealthcheck(ctx, apitypes.GetHealthcheckInput{
+		result, err := client.GetHealthcheck(ctx, goclient.GetHealthcheckInput{
 			Identifier: rs.Primary.ID,
 		})
 		if err != nil {
@@ -130,7 +129,7 @@ func testAccCheckResourceCheckExists(name string, check *apitypes.Healthcheck) r
 	}
 }
 
-func testAccCheckResourceCheck(check *apitypes.Healthcheck) resource.TestCheckFunc {
+func testAccCheckResourceCheck(check *goclient.Healthcheck) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if check.ID == "" {
 			return errors.New("Health check ID is nil")
@@ -163,7 +162,7 @@ func testAccCheckResourceCommandCheckDestroy(s *terraform.State) error {
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-		_, err := client.GetHealthcheck(ctx, apitypes.GetHealthcheckInput{
+		_, err := client.GetHealthcheck(ctx, goclient.GetHealthcheckInput{
 			Identifier: rs.Primary.ID,
 		})
 

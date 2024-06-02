@@ -6,8 +6,7 @@ import (
 	"testing"
 	"time"
 
-	goclient "github.com/appclacks/cli/client"
-	apitypes "github.com/appclacks/go-types"
+	goclient "github.com/appclacks/go-client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
@@ -43,7 +42,7 @@ resource "appclacks_healthcheck_dns" "check_dns" {
 )
 
 func TestAccResourceHealthcheckDNS(t *testing.T) {
-	check := new(apitypes.Healthcheck)
+	check := new(goclient.Healthcheck)
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: testAccProviders,
@@ -128,7 +127,7 @@ func testAccCheckResourceDNSCheckDestroy(s *terraform.State) error {
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-		_, err := client.GetHealthcheck(ctx, apitypes.GetHealthcheckInput{
+		_, err := client.GetHealthcheck(ctx, goclient.GetHealthcheckInput{
 			Identifier: rs.Primary.ID,
 		})
 

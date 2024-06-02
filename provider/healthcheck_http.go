@@ -5,8 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	goclient "github.com/appclacks/cli/client"
-	apitypes "github.com/appclacks/go-types"
+	goclient "github.com/appclacks/go-client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -177,13 +176,13 @@ func resourceHealthcheckHTTPUpdate(ctx context.Context, d *schema.ResourceData, 
 	defer cancel()
 	client := GetAppclacksClient(meta)
 
-	update := apitypes.UpdateHTTPHealthcheckInput{
+	update := goclient.UpdateHTTPHealthcheckInput{
 		ID:       d.Id(),
 		Name:     d.Get(resHealthcheckName).(string),
 		Interval: d.Get(resHealthcheckInterval).(string),
 		Timeout:  d.Get(resHealthcheckTimeout).(string),
 		Enabled:  d.Get(resHealthcheckEnabled).(bool),
-		HealthcheckHTTPDefinition: apitypes.HealthcheckHTTPDefinition{
+		HealthcheckHTTPDefinition: goclient.HealthcheckHTTPDefinition{
 			Target:   d.Get(resHealthcheckTarget).(string),
 			Port:     uint(d.Get(resHealthcheckPort).(int)),
 			Method:   d.Get(resHealthcheckHTTPMethod).(string),
@@ -278,7 +277,7 @@ func resourceHealthcheckHTTPDelete(ctx context.Context, d *schema.ResourceData, 
 	client := GetAppclacksClient(meta)
 
 	healthcheckID := d.Id()
-	_, err := client.DeleteHealthcheck(ctx, apitypes.DeleteHealthcheckInput{ID: healthcheckID})
+	_, err := client.DeleteHealthcheck(ctx, goclient.DeleteHealthcheckInput{ID: healthcheckID})
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -292,12 +291,12 @@ func resourceHealthcheckHTTPCreate(ctx context.Context, d *schema.ResourceData, 
 
 	client := GetAppclacksClient(meta)
 
-	healthcheck := apitypes.CreateHTTPHealthcheckInput{
+	healthcheck := goclient.CreateHTTPHealthcheckInput{
 		Name:     d.Get(resHealthcheckName).(string),
 		Interval: d.Get(resHealthcheckInterval).(string),
 		Timeout:  d.Get(resHealthcheckTimeout).(string),
 		Enabled:  d.Get(resHealthcheckEnabled).(bool),
-		HealthcheckHTTPDefinition: apitypes.HealthcheckHTTPDefinition{
+		HealthcheckHTTPDefinition: goclient.HealthcheckHTTPDefinition{
 			Target:   d.Get(resHealthcheckTarget).(string),
 			Port:     uint(d.Get(resHealthcheckPort).(int)),
 			Method:   d.Get(resHealthcheckHTTPMethod).(string),
@@ -395,7 +394,7 @@ func resourceHealthcheckHTTPRead(ctx context.Context, d *schema.ResourceData, me
 	defer cancel()
 	client := GetAppclacksClient(meta)
 
-	result, err := client.GetHealthcheck(ctx, apitypes.GetHealthcheckInput{
+	result, err := client.GetHealthcheck(ctx, goclient.GetHealthcheckInput{
 		Identifier: d.Id(),
 	})
 	if err != nil {
@@ -409,7 +408,7 @@ func resourceHealthcheckHTTPRead(ctx context.Context, d *schema.ResourceData, me
 	return diag.FromErr(resourceHTTPHealthcheckApply(ctx, d, &result))
 }
 
-func resourceHTTPHealthcheckApply(_ context.Context, d *schema.ResourceData, healthcheck *apitypes.Healthcheck) error {
+func resourceHTTPHealthcheckApply(_ context.Context, d *schema.ResourceData, healthcheck *goclient.Healthcheck) error {
 
 	if healthcheck.Type != "http" {
 		return fmt.Errorf("Invalid healthcheck type. Expecting tcp, got %s", healthcheck.Type)
@@ -441,7 +440,7 @@ func resourceHTTPHealthcheckApply(_ context.Context, d *schema.ResourceData, hea
 		return err
 	}
 
-	definition, ok := healthcheck.Definition.(apitypes.HealthcheckHTTPDefinition)
+	definition, ok := healthcheck.Definition.(goclient.HealthcheckHTTPDefinition)
 	if !ok {
 		return errors.New("Invalid healthcheck definition for HTTP health check")
 	}

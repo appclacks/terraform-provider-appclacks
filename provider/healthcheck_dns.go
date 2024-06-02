@@ -5,8 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	goclient "github.com/appclacks/cli/client"
-	apitypes "github.com/appclacks/go-types"
+	goclient "github.com/appclacks/go-client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -94,13 +93,13 @@ func resourceHealthcheckDNSUpdate(ctx context.Context, d *schema.ResourceData, m
 	defer cancel()
 	client := GetAppclacksClient(meta)
 
-	update := apitypes.UpdateDNSHealthcheckInput{
+	update := goclient.UpdateDNSHealthcheckInput{
 		ID:       d.Id(),
 		Name:     d.Get(resHealthcheckName).(string),
 		Interval: d.Get(resHealthcheckInterval).(string),
 		Timeout:  d.Get(resHealthcheckTimeout).(string),
 		Enabled:  d.Get(resHealthcheckEnabled).(bool),
-		HealthcheckDNSDefinition: apitypes.HealthcheckDNSDefinition{
+		HealthcheckDNSDefinition: goclient.HealthcheckDNSDefinition{
 			Domain: d.Get(resHealthcheckDNSDomain).(string),
 		},
 	}
@@ -140,7 +139,7 @@ func resourceHealthcheckDNSDelete(ctx context.Context, d *schema.ResourceData, m
 	client := GetAppclacksClient(meta)
 
 	healthcheckID := d.Id()
-	_, err := client.DeleteHealthcheck(ctx, apitypes.DeleteHealthcheckInput{ID: healthcheckID})
+	_, err := client.DeleteHealthcheck(ctx, goclient.DeleteHealthcheckInput{ID: healthcheckID})
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -154,12 +153,12 @@ func resourceHealthcheckDNSCreate(ctx context.Context, d *schema.ResourceData, m
 
 	client := GetAppclacksClient(meta)
 
-	healthcheck := apitypes.CreateDNSHealthcheckInput{
+	healthcheck := goclient.CreateDNSHealthcheckInput{
 		Name:     d.Get(resHealthcheckName).(string),
 		Interval: d.Get(resHealthcheckInterval).(string),
 		Timeout:  d.Get(resHealthcheckTimeout).(string),
 		Enabled:  d.Get(resHealthcheckEnabled).(bool),
-		HealthcheckDNSDefinition: apitypes.HealthcheckDNSDefinition{
+		HealthcheckDNSDefinition: goclient.HealthcheckDNSDefinition{
 			Domain: d.Get(resHealthcheckDNSDomain).(string),
 		},
 	}
@@ -200,7 +199,7 @@ func resourceHealthcheckDNSRead(ctx context.Context, d *schema.ResourceData, met
 	defer cancel()
 	client := GetAppclacksClient(meta)
 
-	result, err := client.GetHealthcheck(ctx, apitypes.GetHealthcheckInput{
+	result, err := client.GetHealthcheck(ctx, goclient.GetHealthcheckInput{
 		Identifier: d.Id(),
 	})
 	if err != nil {
@@ -214,7 +213,7 @@ func resourceHealthcheckDNSRead(ctx context.Context, d *schema.ResourceData, met
 	return diag.FromErr(resourceDNSHealthcheckApply(ctx, d, &result))
 }
 
-func resourceDNSHealthcheckApply(_ context.Context, d *schema.ResourceData, healthcheck *apitypes.Healthcheck) error {
+func resourceDNSHealthcheckApply(_ context.Context, d *schema.ResourceData, healthcheck *goclient.Healthcheck) error {
 
 	if healthcheck.Type != "dns" {
 		return fmt.Errorf("Invalid healthcheck type. Expecting dns, got %s", healthcheck.Type)
@@ -246,7 +245,7 @@ func resourceDNSHealthcheckApply(_ context.Context, d *schema.ResourceData, heal
 		return err
 	}
 
-	definition, ok := healthcheck.Definition.(apitypes.HealthcheckDNSDefinition)
+	definition, ok := healthcheck.Definition.(goclient.HealthcheckDNSDefinition)
 	if !ok {
 		return errors.New("Invalid healthcheck definition for DNS health check")
 	}

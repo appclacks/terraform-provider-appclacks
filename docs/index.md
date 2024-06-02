@@ -1,16 +1,15 @@
 ---
 page_title: "Provider: Appclacks"
 description: |-
-  The Appclacks provider allows the use of the Appclacks cloud monitoring platform within Terraform configurations.
+  The Appclacks provider allows the use of the Appclacks monitoring platform within Terraform configurations.
 ---
 
 # Appclacks Provider
 
-The "Appclacks" provider allows the use of the [Appclacks cloud monitoring platform](https://appclacks.com) within Terraform configurations.
+The "Appclacks" provider allows the use of the [Appclacks platform](https://appclacks.com) within Terraform configurations.
 
-Appclacks is a cloud monitoring platform allowing users to create, manage and run various health checks to monitor the health of websites and infrastructures.
-
-Appclacks can monitor public endpoints by executing configured health checks on them from multiple point of presences. But unlike alternatives,  Appclacks can also be used to monitor private infrastructures.
+Appclacks is an open source platform dedicated to observability.
+For example, this provider allows  users to create, manage and run various health checks to monitor the health of websites and infrastructures (blackbox monitoring)
 
 The prober used by Appclacks named Cabourotte is a free software that you can host on your private infrastructure and plug on the Appclacks API to autoconfigure it.
 
@@ -27,14 +26,14 @@ terraform {
   }
 }
 
-// You can also export the APPCLACKS_ORGANIZATION_ID and
-// the APPCLACKS_TOKEN environment variables to configure
-// authentication, or configure the HOME/.config/appclacks/appaclacks.yaml
-// file.
+// You can also export the APPCLACKS_USERNAME,
+// APPCLACKS_PASSWORD and APPCLACKS_API_ENDPOINT variables
+// to configure the client.
 // See the documentation for more information about authentication: https://www.doc.appclacks.com/getting-started/
 provider "appclacks" {
-  organization_id = ""
-  token = ""
+  api_endpoint = ""
+  username = ""
+  password = ""
 }
 
 resource "appclacks_healthcheck_command" "test_command" {
@@ -125,20 +124,21 @@ For obtaining an Appclacks API token, please refer to the [Appclacks documentati
 configuration and risks secret leakage should this file ever be committed to a
 public version control system.
 
-Credentials can be provided by adding an `organization_id`, `token`, and optionally `api_url`, to the `appclacks` provider block.
+Credentials can be provided by adding an `api_endpoint`, `username`, and `password`, to the `appclacks` provider block.
 
 Usage:
 
 ```terraform
 provider "appclacks" {
-  organization_id = "my-organization_id"
-  token = "my-token"
+  api_endpoint = "https://appclacks.com"
+  username = "my-user"
+  password = "my-password"
 }
 ```
 
 ### Environment Variables
 
-Credentials can also be provided by setting the `APPCLACKS_ORGANIZATION_ID`, `APPCLACKS_TOKEN`, and optionally `APPCLACKS_API_URL` environment variables.
+Credentials can also be provided by setting the `APPCLACKS_API_ENDPOINT`, `APPCLACKS_USERNAME`, and optionally `APPCLACKS_PASSWORD` environment variables.
 
 For example:
 
@@ -147,15 +147,8 @@ provider "appclacks" {}
 ```
 
 ```bash
-export APPCLACKS_ORGANIZATION_ID="my-organization_id"
-export APPCLACKS_TOKEN="my-token"
+export APPCLACKS_API_ENDPOINT="https://appclacks.com"
+export APPCLACKS_USERNAME="my-user"
+export APPCLACKS_PASSWORD="password"
 terraform plan
 ```
-
-## Appclacks Configuration Reference
-
-| Name             | Description               |  Type  |            Default            | Required |
-| ---------------- | ------------------------- | :----: | :---------------------------: | :------: |
-| api\_url         | Appclacks API URL         | string | `"https://api.appclacks.com"` |    no    |
-| organization\_id | Appclacks organization ID | string |              n/a              |   yes    |
-| token            | Appclacks API token       | string |              n/a              |   yes    |

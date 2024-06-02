@@ -13,8 +13,7 @@ The `examples` directory provides configuration examples.
 Tests will create real resources on your account.
 
 ```
-export APPCLACKS_ORGANIZATION_ID="<org-id>"
-export APPCLACKS_TOKEN='<token>'
+export APPCLACKS_API_ENDPOINT="http://localhost:9000"
 export TF_ACC=true
 go test -v -race ./...
 ```

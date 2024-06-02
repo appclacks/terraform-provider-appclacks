@@ -5,8 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	goclient "github.com/appclacks/cli/client"
-	apitypes "github.com/appclacks/go-types"
+	goclient "github.com/appclacks/go-client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -82,13 +81,13 @@ func resourceHealthcheckCommandUpdate(ctx context.Context, d *schema.ResourceDat
 	defer cancel()
 	client := GetAppclacksClient(meta)
 
-	update := apitypes.UpdateCommandHealthcheckInput{
+	update := goclient.UpdateCommandHealthcheckInput{
 		ID:       d.Id(),
 		Name:     d.Get(resHealthcheckName).(string),
 		Interval: d.Get(resHealthcheckInterval).(string),
 		Timeout:  d.Get(resHealthcheckTimeout).(string),
 		Enabled:  false,
-		HealthcheckCommandDefinition: apitypes.HealthcheckCommandDefinition{
+		HealthcheckCommandDefinition: goclient.HealthcheckCommandDefinition{
 			Command: d.Get(resHealthcheckCommandCommand).(string),
 		},
 	}
@@ -128,7 +127,7 @@ func resourceHealthcheckCommandDelete(ctx context.Context, d *schema.ResourceDat
 	client := GetAppclacksClient(meta)
 
 	healthcheckID := d.Id()
-	_, err := client.DeleteHealthcheck(ctx, apitypes.DeleteHealthcheckInput{ID: healthcheckID})
+	_, err := client.DeleteHealthcheck(ctx, goclient.DeleteHealthcheckInput{ID: healthcheckID})
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -142,12 +141,12 @@ func resourceHealthcheckCommandCreate(ctx context.Context, d *schema.ResourceDat
 
 	client := GetAppclacksClient(meta)
 
-	healthcheck := apitypes.CreateCommandHealthcheckInput{
+	healthcheck := goclient.CreateCommandHealthcheckInput{
 		Name:     d.Get(resHealthcheckName).(string),
 		Interval: d.Get(resHealthcheckInterval).(string),
 		Timeout:  d.Get(resHealthcheckTimeout).(string),
 		Enabled:  false,
-		HealthcheckCommandDefinition: apitypes.HealthcheckCommandDefinition{
+		HealthcheckCommandDefinition: goclient.HealthcheckCommandDefinition{
 			Command: d.Get(resHealthcheckCommandCommand).(string),
 		},
 	}
@@ -188,7 +187,7 @@ func resourceHealthcheckCommandRead(ctx context.Context, d *schema.ResourceData,
 	defer cancel()
 	client := GetAppclacksClient(meta)
 
-	result, err := client.GetHealthcheck(ctx, apitypes.GetHealthcheckInput{
+	result, err := client.GetHealthcheck(ctx, goclient.GetHealthcheckInput{
 		Identifier: d.Id(),
 	})
 	if err != nil {
@@ -202,7 +201,7 @@ func resourceHealthcheckCommandRead(ctx context.Context, d *schema.ResourceData,
 	return diag.FromErr(resourceCommandHealthcheckApply(ctx, d, &result))
 }
 
-func resourceCommandHealthcheckApply(_ context.Context, d *schema.ResourceData, healthcheck *apitypes.Healthcheck) error {
+func resourceCommandHealthcheckApply(_ context.Context, d *schema.ResourceData, healthcheck *goclient.Healthcheck) error {
 
 	if healthcheck.Type != "command" {
 		return fmt.Errorf("Invalid healthcheck type. Expecting command, got %s", healthcheck.Type)
@@ -230,7 +229,7 @@ func resourceCommandHealthcheckApply(_ context.Context, d *schema.ResourceData, 
 		return err
 	}
 
-	definition, ok := healthcheck.Definition.(apitypes.HealthcheckCommandDefinition)
+	definition, ok := healthcheck.Definition.(goclient.HealthcheckCommandDefinition)
 	if !ok {
 		return errors.New("Invalid healthcheck definition for Command health check")
 	}
