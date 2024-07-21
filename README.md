@@ -2,7 +2,7 @@
 
 Official Terraform provider for [Appclacks](https://appclacks.com/).
 
-The [Terraform provider documentation](https://registry.terraform.io/providers/appclacks/appclacks/latest/docs) explains how to use it. See also the official [Appclacks documentation](https://www.doc.appclacks.com/guides/terraform/).
+The [Terraform provider documentation](https://registry.terraform.io/providers/appclacks/appclacks/latest/docs) explains how to use it. See also the official [Appclacks documentation](https://doc.appclacks.com/healthcheck/terraform/index.html).
 
 ## Examples
 
