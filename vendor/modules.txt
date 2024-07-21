@@ -37,7 +37,7 @@ github.com/agext/levenshtein
 # github.com/apparentlymart/go-textseg/v15 v15.0.0
 ## explicit; go 1.16
 github.com/apparentlymart/go-textseg/v15/textseg
-# github.com/appclacks/go-client v0.0.0-20240602163908-0de41c983ab7
+# github.com/appclacks/go-client v0.0.0-20240715201443-0ce681171dc2
 ## explicit; go 1.22.0
 github.com/appclacks/go-client
 # github.com/armon/go-radix v1.0.0

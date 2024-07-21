@@ -8,7 +8,7 @@ import (
 
 type HealthcheckCommandDefinition struct {
 	Command   string   `json:"command" validate:"required,max=512,min=1"`
-	Arguments []string `json:"arguments"`
+	Arguments []string `json:"arguments,omitempty"`
 }
 
 type CreateCommandHealthcheckInput struct {
